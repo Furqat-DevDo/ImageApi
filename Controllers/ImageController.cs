@@ -1,5 +1,7 @@
 using System.Net.Mime;
 using ImagesApi.Entity;
+using ImagesApi.Mapper;
+using ImagesApi.Model;
 using ImagesApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,56 +10,40 @@ namespace ImagesApi.Controllers;
 [Route("api/[controller]")]
 public class ImageController:ControllerBase
 {
+    private readonly ILogger<ImageController> _log;
     private readonly IimageService _iser;
 
-    public ImageController ( IimageService iser )
+    public ImageController ( IimageService iser,ILogger<ImageController> logger )
     {
+        _log=logger;
         _iser=iser; 
     }
     
     [HttpPost]
-    public async Task<IActionResult> PostImagesAsync( IEnumerable<IFormFile> files)
+    public async Task<IActionResult> PostImagesAsync( [FromForm]NewImage image)
     {
         var extensions = new string[] { ".jpg", ".png", ".svg", ".mp4" };
         var fileSize = 5242880; // 5MB in bytes
 
-        if(files.Count() < 1 || files.Count() > 5)
+        if(image.Data == null)
         {
-            return BadRequest("Can upload 1~5 files at a time.");
+            return BadRequest();
+        }
+        var fileExtension = Path.GetExtension(image.Data.FileName).ToLowerInvariant();
+        if(!extensions.Contains(fileExtension))
+        {
+            return BadRequest($"{fileExtension} format file not allowed!");
         }
 
-        // extension validation
-        foreach(var file in files)
+        if(image.Data.Length > fileSize)
         {
-            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if(!extensions.Contains(fileExtension))
-            {
-                return BadRequest($"{fileExtension} format file not allowed!");
-            }
-
-            if(file.Length > fileSize)
-            {
-                return BadRequest($"Max file size 5MB!");
-            }
+            return BadRequest($"Max file size 5MB!");
         }
 
-        var images = files.Select(f => 
-        {
-            using var stream = new MemoryStream();
-            f.CopyTo(stream);
-
-            return new Image()
-            {
-                Id = Guid.NewGuid(),
-                Data = stream.ToArray(),
-                Title="IlmHub",
-                AltText = "Some examples from ilmhub oj"  
-            };
-        }).ToList();
-
-        await _iser.CreateAsync(images);
-
-        return Ok(images);
+        var imageEntity = image.ToEntity();        
+        await  _iser.CreateAsync(imageEntity);
+        
+        return Ok(imageEntity);
         // var filesArray = files.Select(f => 
         // {
         //     using var stream = new MemoryStream();

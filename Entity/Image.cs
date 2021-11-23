@@ -17,6 +17,14 @@ namespace ImagesApi.Entity
         [MaxLength(20)]
         public string ContentType { get; set; }
         [MaxLength(255)]
-        public string AltText{get;set;}
+        public string AltText { get; set; }
+        public Image(string title, string contentType, string altText, byte[] data)
+        {
+            this.Id = Guid.NewGuid();
+            this.Title = title;
+            this.ContentType = contentType;
+            this.AltText = altText;
+            Data = data;
+        }
     }
 }

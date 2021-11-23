@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ImagesApi.Model;
 public class NewImage
 {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Id { get; set; }
         [Required]
         public IFormFile Data { get; set; }
         [Required]

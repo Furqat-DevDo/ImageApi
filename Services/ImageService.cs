@@ -45,7 +45,7 @@ namespace ImagesApi.Services
         {  
           var image =await GetAsync(Id);
            
-            if(await ExsistAsync(Id))
+            if(await ExsistAsync(image.Id))
             {
               _cont.Images.Remove(image);
               await _cont.SaveChangesAsync();
