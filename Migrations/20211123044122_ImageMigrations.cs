@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ImagesApi.Migrations
 {
-    public partial class ImageService : Migration
+    public partial class ImageMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,8 @@ namespace ImagesApi.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Data = table.Column<byte[]>(type: "varbinary(max)", maxLength: 5242880, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    AltText = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ContentType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    AltText = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {

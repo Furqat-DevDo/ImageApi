@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImagesApi.Migrations
 {
     [DbContext(typeof(ImageDbContext))]
-    [Migration("20211122154806_ImageService")]
-    partial class ImageService
+    [Migration("20211123044122_ImageMigrations")]
+    partial class ImageMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,13 @@ namespace ImagesApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AltText")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<byte[]>("Data")
                         .IsRequired()

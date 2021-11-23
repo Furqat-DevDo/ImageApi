@@ -13,13 +13,10 @@ namespace ImagesApi.Entity
         [Required]
         [MaxLength(255), MinLength(1)]
         public string Title { get; set; }
-        public string AltText { get; set; }
-        public Image(string title, string altText)
-        {
-            this.Id = Guid.NewGuid();
-            this.Title = title;
-            this.AltText = altText;
-
-        }
+        [Required]
+        [MaxLength(20)]
+        public string ContentType { get; set; }
+        [MaxLength(255)]
+        public string AltText{get;set;}
     }
 }
